@@ -26,4 +26,5 @@
 
 execute 'curl -L https://bit.ly/janus-bootstrap | bash' do
   not_if { File.exist?("#{node['etc']['passwd'][node['current_user']]['dir']}/.vim/bootstrap.sh") }
+  user node['current_user']
 end
