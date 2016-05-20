@@ -24,7 +24,15 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+if node['user'] && node['user']['id']
+  user_name = node['user']['id']
+  home_dir = Etc.getpwnam(user_name).dir
+else
+  user_name = node['current_user']
+  home_dir = node['etc']['passwd'][user_name]['dir']
+end
+
 execute 'curl -L https://bit.ly/janus-bootstrap | bash' do
-  not_if { File.exist?("#{node['etc']['passwd'][node['current_user']]['dir']}/.vim/bootstrap.sh") }
-  user node['current_user']
+  not_if { File.exist?("#{home_dir}/.vim/bootstrap.sh") }
+  user user_name
 end
